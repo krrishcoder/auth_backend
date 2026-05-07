@@ -29,6 +29,17 @@ for user login, then issues short-lived bearer tokens for the MCP server.
 - `POST /introspect`
 - `GET /oauth/google/callback`
 
+## Claude web connector redirects
+
+For Claude.ai custom connectors, dynamic client registration must allow Claude's
+hosted OAuth callback:
+
+`https://claude.ai/api/mcp/auth_callback`
+
+The server allows that callback and `https://claude.com/api/mcp/auth_callback`
+by default. To override the allowlist, set comma-separated values in
+`ALLOWED_REDIRECT_URIS`.
+
 This is intentionally developer-focused. For production, persist client
 registrations and authorization codes, enforce HTTPS, restrict dynamic client
 registration, and store secrets in a proper secret manager.

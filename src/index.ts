@@ -18,6 +18,13 @@ const CONFIG = {
   },
   jwtSecret: process.env.AUTH_JWT_SECRET || "dev-change-me-to-a-long-random-string",
   mcpResource: process.env.MCP_RESOURCE || "http://localhost:3000",
+  allowedRedirectUris: (
+    process.env.ALLOWED_REDIRECT_URIS ||
+    "https://claude.ai/api/mcp/auth_callback,https://claude.com/api/mcp/auth_callback"
+  )
+    .split(",")
+    .map((uri) => uri.trim())
+    .filter(Boolean),
 };
 
 type RegisteredClient = {
@@ -72,6 +79,10 @@ function assertGoogleConfigured() {
 function isAllowedRedirectUri(uri: string) {
   try {
     const parsed = new URL(uri);
+    if (CONFIG.allowedRedirectUris.includes(parsed.toString())) {
+      return true;
+    }
+
     return parsed.protocol === "http:" && ["localhost", "127.0.0.1", "::1"].includes(parsed.hostname);
   } catch {
     return false;
